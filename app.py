@@ -1,5 +1,4 @@
 from flask import Flask, request, jsonify
-from werkzeug.utils import secure_filename
 from LLM.main import predict_outcome
 from Doc_sim.main import calculate_similarity, highlight_plagiarism
 from utils import extract_text
@@ -20,14 +19,15 @@ def llm_detect():
     if not files:
         return jsonify({'error': 'No files uploaded'}), 400
 
+
     results = {}
     for file in files:
         try:
             text = extract_text(file)
             label = predict_outcome(text)
-            results[secure_filename(file.filename)] = label
+            results[(file.filename).split('/')[-1]] = label
         except Exception as e:
-            results[secure_filename(file.filename)] = f"Error: {str(e)}"
+            results[(file.filename).split('/')[-1]] = f"Error: {str(e)}"
 
     return jsonify(results)
 
@@ -41,7 +41,7 @@ def doc_similarity():
     texts = {}
     for file in files:
         try:
-            texts[secure_filename(file.filename)] = extract_text(file)
+            texts[(file.filename).split('/')[-1]] = extract_text(file)
         except Exception as e:
             return jsonify({'error': f"{file.filename}: {str(e)}"}), 500
 
