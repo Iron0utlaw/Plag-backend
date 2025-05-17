@@ -8,12 +8,14 @@ from flask_cors import CORS
 import logging
 
 logging.basicConfig(level=logging.DEBUG)
+logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
 CORS(app) 
 
 @app.route('/llm_detect', methods=['POST'])
 def llm_detect():
+    logger.info("Received request for LLM detection")
     files = request.files.getlist('files')
     if not files:
         return jsonify({'error': 'No files uploaded'}), 400
@@ -31,6 +33,7 @@ def llm_detect():
 
 @app.route('/doc_similarity', methods=['POST'])
 def doc_similarity():
+    logger.info("Received request for LLM detection")
     files = request.files.getlist('files')
     if not files or len(files) < 2:
         return jsonify({'error': 'At least two files are required'}), 400

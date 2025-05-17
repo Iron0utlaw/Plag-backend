@@ -5,11 +5,16 @@ import torch
 from nltk.corpus import stopwords
 from nltk.tokenize import sent_tokenize
 import nltk
+import logging
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 nltk.download('punkt_tab')
 nltk.download('stopwords')
 
 def preprocess_text(text):
+    logger.info("Preprocessing text")
     stop_words = set(stopwords.words('english'))
     translator = str.maketrans('', '', string.punctuation)
 
@@ -24,9 +29,11 @@ def preprocess_text(text):
     return preprocessed_sentences
 
 def calculate_text_hash(text):
+    logger.debug("Calculating text hash")
     return hashlib.sha256(text.strip().encode('utf-8')).hexdigest()
 
 def calculate_similarity(text1, text2):
+    logger.info("Calculating similarity")
     hash1 = calculate_text_hash(text1)
     hash2 = calculate_text_hash(text2)
 
@@ -48,6 +55,7 @@ def calculate_similarity(text1, text2):
     return avg_similarity, cosine_similarities, sentences1, sentences2
 
 def highlight_plagiarism(cosine_similarities, sentences_to_highlight, sentences_to_compare):
+    logger.info("Calculating similarity")
     if cosine_similarities is None:
         return "[RED] Document is an exact match [END]\n"
 
